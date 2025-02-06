@@ -1,0 +1,25 @@
+
+@baseURL = http://localhost:3000
+
+### GetHelloWord
+
+# @name GetHelloWord
+Get {{baseURL}}/home/hello
+
+### Get Goodbye
+
+# @name GetGoodbye
+Get {{baseURL}}/home/goodbye
+
+### Get Manual_Concepts
+
+# @name GetManual_Concepts
+
+Get {{baseURL}}/concepts_manual
+
+
+### Get Concepts_automatic
+
+# @name GetConcepts_automatic
+
+Get {{baseURL}}/concepts_automatic
