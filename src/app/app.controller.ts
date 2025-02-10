@@ -7,8 +7,4 @@ export class AppController {
   getHello(): string {
     return 'hello';
   }
-  @Get('goodbye')
-  getGoodbye(): string {
-    return 'goodbye';
-  }
 }

@@ -1,25 +1,30 @@
 
 @baseURL = http://localhost:3000
 
-### GetHelloWord
-
+# GetHelloWord
+###
 # @name GetHelloWord
 Get {{baseURL}}/home/hello
 
-### Get Goodbye
+# Get users
+###
+# @name GetUsers
+Get {{baseURL}}/users
 
-# @name GetGoodbye
-Get {{baseURL}}/home/goodbye
+# Get user by id
+###
+# @name GetUserById
+Get {{baseURL}}/users/1
 
-### Get Manual_Concepts
-
-# @name GetManual_Concepts
-
-Get {{baseURL}}/concepts_manual
-
-
-### Get Concepts_automatic
-
-# @name GetConcepts_automatic
-
-Get {{baseURL}}/concepts_automatic
+# Create user
+###
+Post {{baseURL}}/users/create
+Content-Type: application/json
+{
+  "name": "John Doe",
+  "email": "25",
+  "password": "123456",
+  "role": "admin",
+  "phoneNumber": "1234567890",
+  "isActive": true
+}
