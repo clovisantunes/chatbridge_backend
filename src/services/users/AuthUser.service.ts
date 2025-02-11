@@ -23,8 +23,8 @@ class AuthUserService {
         }
 
         const token = this.jwtService.sign(
-            { id: authUser.id, email: authUser.email }, // Payload
-            { expiresIn: jwtConstants.expiresIn } // Opções (tempo de expiração)
+            { id: authUser.id, email: authUser.email , admin: authUser.admin },
+            { expiresIn: jwtConstants.expiresIn } 
         );
 
         return { message: "Login successful", token };

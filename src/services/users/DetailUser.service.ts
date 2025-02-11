@@ -8,13 +8,13 @@ import { jwtConstants } from 'src/config/token';
 class DetailUserService {
   private validateToken(token: string): number {
     try {
-      const decoded: any = jwt.verify(token, jwtConstants.secret || 'batata');
+      const decoded: any = jwt.verify(token, jwtConstants.secret);
 
       if (!decoded.id) {
         throw new UnauthorizedException('Invalid token payload');
       }
 
-      return decoded.id; // Retorna o ID do usuário do token
+      return decoded.id; 
     } catch (error) {
       console.error('Token verification failed:', error.message);
       throw new UnauthorizedException('Invalid or expired token');

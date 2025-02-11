@@ -30,6 +30,7 @@ class CreateUserService{
                 createdAt: user.createdAt,
                 updatedAt: user.updatedAt,
                 lastLogin: user.lastLogin
+                
             },
             select:{
                 id: true,

@@ -26,7 +26,8 @@ export class UserService{
             isActive: user.isActive,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
-            lastLogin: user.lastLogin
+            lastLogin: user.lastLogin,
+            messagesTecnico: user.messagesTecnico
         };
         
     }

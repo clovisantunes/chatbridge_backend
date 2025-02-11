@@ -1,5 +1,5 @@
 export type User = {
-    id: number;
+    id: string;
     name: string;
     email: string;
     password: string;
@@ -9,4 +9,5 @@ export type User = {
     createdAt: Date; 
     updatedAt: Date; 
     lastLogin?: Date; 
+    messagesTecnico?: string[];
 };
