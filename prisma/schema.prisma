@@ -30,10 +30,11 @@ model User {
 }
 
 model MessageWhats {
-  id          String   @id @default(uuid())
-  content     String
-  timestamp   DateTime @default(now())
-  client      String?  // Nome ou ID do cliente (se houver um sistema de clientes)
+  id          Int     @id @default(autoincrement())
+  number      String
+  name       String
+  message     String
+  timeStamp  DateTime @default(now())
 }
 
 model MessageTecnico {

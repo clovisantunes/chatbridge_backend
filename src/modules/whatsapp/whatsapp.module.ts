@@ -8,15 +8,24 @@ import { jwtConstants } from 'src/config/token';
 import { ReceiveController } from 'src/controllers/whatsControllers/ReceiveMessage.controller';
 import { DeleteUser } from 'src/controllers/users/DeleteUser.controller';
 import { DeleteUserService } from 'src/services/users/DeleteUser.service';
+import { WhatsAppGateway } from 'src/config/Whatsapp.gateway';
 
 @Module({
-    providers: [WhatsAppService, JwtAuthGuard, DeleteUserService],
-    controllers: [WhatsAppController, ReceiveController, DeleteUser],
-    imports: [UsersModule,
-          JwtModule.register({
-                    secret: jwtConstants.secret,
-                    signOptions: { expiresIn: jwtConstants.expiresIn }
-                })
+    imports: [
+        UsersModule,
+        JwtModule.register({
+            secret: jwtConstants.secret,
+            signOptions: { expiresIn: jwtConstants.expiresIn }
+        })
     ],
+    providers: [WhatsAppService, JwtAuthGuard, DeleteUserService, WhatsAppGateway,
+        {
+          provide: 'WEBSOCKET_SERVER',
+          useFactory: (gateway: WhatsAppGateway) => gateway.server,
+          inject: [WhatsAppGateway],
+        },],
+    controllers: [WhatsAppController, ReceiveController, DeleteUser],
+    exports: [WhatsAppService, WhatsAppGateway], 
 })
 export class WhatsappModule {}
+

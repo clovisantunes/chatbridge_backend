@@ -1,3 +1,6 @@
-2025/02/11-17:47:23.519 2724 Reusing MANIFEST C:\softwares\Backend\task_mangement\task_management\.wwebjs_auth\session\Default\Local Storage\leveldb/MANIFEST-000001
-2025/02/11-17:47:23.519 2724 Recovering log #19
-2025/02/11-17:47:23.520 2724 Reusing old log C:\softwares\Backend\task_mangement\task_management\.wwebjs_auth\session\Default\Local Storage\leveldb/000019.log 
+2025/02/12-09:44:40.685 2c64 Reusing MANIFEST C:\softwares\Backend\task_mangement\task_management\.wwebjs_auth\session\Default\Local Storage\leveldb/MANIFEST-000001
+2025/02/12-09:44:40.687 2c64 Recovering log #24
+2025/02/12-09:44:40.688 2c64 Reusing old log C:\softwares\Backend\task_mangement\task_management\.wwebjs_auth\session\Default\Local Storage\leveldb/000024.log 
+2025/02/12-09:45:41.280 1d78 Level-0 table #27: started
+2025/02/12-09:45:41.283 1d78 Level-0 table #27: 15043 bytes OK
+2025/02/12-09:45:41.285 1d78 Delete type=0 #24
