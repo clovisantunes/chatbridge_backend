@@ -23,7 +23,7 @@ class AuthUserService {
         }
 
         const token = this.jwtService.sign(
-            { id: authUser.id, email: authUser.email , admin: authUser.admin },
+            { id: authUser.id, email: authUser.email , admin: authUser.admin, sector: authUser.setor },
             { expiresIn: jwtConstants.expiresIn } 
         );
 

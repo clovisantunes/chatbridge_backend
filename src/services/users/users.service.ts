@@ -22,6 +22,7 @@ export class UserService{
             email: user.email,
             password: user.password,
             admin: user.admin,
+            setor: user.setor,
             phoneNumber: user.phoneNumber,
             isActive: user.isActive,
             createdAt: user.createdAt,

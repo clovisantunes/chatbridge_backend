@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -16,25 +13,26 @@ datasource db {
 // npx prisma migrate dev
 
 model User {
-  id         Int     @id @default(autoincrement())
-  name      String
-  email     String  @unique
-  password  String
-  admin      Boolean @default(false)
-  phoneNumber     String?
-  isActive Boolean @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  lastLogin DateTime?
-  messagesTecnico    MessageTecnico[]  // Relacionamento com as mensagens enviadas pelo técnico
+  id            Int              @id @default(autoincrement())
+  name          String
+  email         String           @unique
+  password      String
+  admin         Boolean          @default(false)
+  setor         String           // Setor do usuário (ex: "Suporte", "Financeiro")
+  phoneNumber   String?
+  isActive      Boolean          @default(true)
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  lastLogin     DateTime?
+  messagesTecnico MessageTecnico[] // Relacionamento com as mensagens enviadas pelo técnico
 }
 
 model MessageWhats {
-  id          Int     @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   number      String
-  name       String
+  name        String
   message     String
-  timeStamp  DateTime @default(now())
+  timeStamp   DateTime @default(now())
 }
 
 model MessageTecnico {
@@ -44,4 +42,44 @@ model MessageTecnico {
   recipient   String   // Número ou nome do destinatário
   userId      Int
   user        User     @relation(fields: [userId], references: [id]) // Relacionamento com User
+}
+
+model AutomaticMessage {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique // Nome da mensagem automática (ex: "Apresentação")
+  description String?  // Descrição opcional
+  steps       Step[]   // Etapas da mensagem automática
+  sector      String   // Setor associado à mensagem automática (ex: "Suporte", "Financeiro")
+}
+
+model Step {
+  id                Int      @id @default(autoincrement())
+  automaticMessage  AutomaticMessage @relation(fields: [automaticMessageId], references: [id])
+  automaticMessageId Int
+  content           String   // Conteúdo da mensagem
+  options           Option[] // Opções para a próxima etapa
+  order             Int      // Ordem da etapa na sequência
+}
+
+model Option {
+  id                Int      @id @default(autoincrement())
+  step              Step     @relation(fields: [stepId], references: [id])
+  stepId            Int
+  label             String   // Rótulo da opção (ex: "Sim", "Não")
+  nextStepId        Int?     // ID da próxima etapa (opcional, para encadeamento)
+}
+model UserSession {
+  id       Int     @id @default(autoincrement())
+  number   String  @unique // Número do usuário no WhatsApp
+  sector   String  // Setor atual do usuário
+  lastStep Int?    // Última etapa que ele estava (opcional)
+}
+
+model HistoryChat {
+  id        Int      @id @default(autoincrement())  // Identificador único do histórico
+  numero    String   // Número do usuário
+  mensagem  String   // Conteúdo da mensagem enviada
+  setor     String   // Setor relacionado à mensagem (ex: 'suporte', 'vendas', etc.)
+  createdAt DateTime @default(now())  // Data e hora da mensagem
+  updatedAt DateTime @updatedAt  // Data e hora da última atualização
 }
