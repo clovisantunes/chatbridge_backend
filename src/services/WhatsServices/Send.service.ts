@@ -19,7 +19,7 @@ export class WhatsAppService {
     @Inject(forwardRef(() => SectorService))
     private readonly whatsAppGateway: WhatsAppGateway,
     private readonly sectorService: SectorService,
-    public readonly userSessionService: UserSessionService
+    public readonly userSessionService: UserSessionService,
   ) {
     this.initializeClient();
   }
@@ -29,8 +29,8 @@ export class WhatsAppService {
 
     this.client = new Client({
       authStrategy: new LocalAuth({
-        dataPath: this.sessionDataPath, 
-        clientId: 'default', 
+        dataPath: this.sessionDataPath,
+        clientId: 'default',
       }),
       puppeteer: {
         headless: true,
@@ -93,7 +93,7 @@ export class WhatsAppService {
       this.logger.log('Tentando reconectar...');
       this.initializeClient();
       this.isReconnecting = false;
-    }, 10000); 
+    }, 10000);
   }
 
   public async sendAutomaticMessage(to: string, message: string) {
@@ -102,16 +102,16 @@ export class WhatsAppService {
 
   async waitForUserResponse(from: string): Promise<string> {
     return new Promise((resolve) => {
-        const messageListener = async (message: any) => {
-            if (message.from === from) {
-                this.client.off('message', messageListener); // Remove o listener após capturar a resposta
-                resolve(message.body.trim()); // Retorna a resposta do usuário
-            }
-        };
+      const messageListener = async (message: any) => {
+        if (message.from === from) {
+          this.client.off('message', messageListener); // Remove o listener após capturar a resposta
+          resolve(message.body.trim()); // Retorna a resposta do usuário
+        }
+      };
 
-        this.client.on('message', messageListener);
+      this.client.on('message', messageListener);
     });
-}
+  }
 
   public async handleIncomingMessage(message: any) {
     const from = message.from; // Número do usuário
@@ -121,76 +121,85 @@ export class WhatsAppService {
     let userSector = await this.userSessionService.getUserSector(from);
 
     // Se o usuário não tem um setor, oferecer opções apenas uma vez
-    if (!userSector || userSector === "nenhum") {
-        if (messageContent !== "1" && messageContent !== "2") {
-            await this.sendAutomaticMessage(
-                from,
-                `Bem-vindo! Selecione o que deseja:\n\n1️⃣ - Suporte Técnico\n2️⃣ - Financeiro`
-            );
-            return; // Finaliza a execução aqui
-        }
-       
-
-        // Se o usuário escolheu um setor, salvar e seguir
-        const selectedSector = messageContent === "1" ? "Suporte Técnico" : "Financeiro";
-        await this.userSessionService.setUserSector(from, selectedSector);
+    if (!userSector || userSector === 'nenhum') {
+      if (messageContent !== '1' && messageContent !== '2') {
         await this.sendAutomaticMessage(
-            from,
-            `Você escolheu o setor ${selectedSector}. O que deseja fazer?\n\n1️⃣ - Descrever solicitação\n2️⃣ - Voltar`
+          from,
+          `Bem-vindo! Selecione o que deseja:\n\n1️⃣ - Suporte Técnico\n2️⃣ - Financeiro`,
         );
         return; // Finaliza a execução aqui
+      }
+
+      // Se o usuário escolheu um setor, salvar e seguir
+      const selectedSector =
+        messageContent === '1' ? 'Suporte Técnico' : 'Financeiro';
+      await this.userSessionService.setUserSector(from, selectedSector);
+      await this.sendAutomaticMessage(
+        from,
+        `Você escolheu o setor ${selectedSector}. O que deseja fazer?\n\n1️⃣ - Descrever solicitação\n2️⃣ - Voltar`,
+      );
+      return; // Finaliza a execução aqui
     }
 
     // Se o usuário já tem um setor e ainda não respondeu se quer continuar
-// Defina uma variável para controlar se a solicitação de descrição já foi feita
-let descricaoSolicitada = false;
+    // Defina uma variável para controlar se a solicitação de descrição já foi feita
+    let descricaoSolicitada = false;
 
-// Verifique se o usuário já tem um setor e não respondeu se quer continuar
-if (messageContent !== "1" && messageContent !== "2" && descricaoSolicitada) {
-    await this.sendAutomaticMessage(
+    // Verifique se o usuário já tem um setor e não respondeu se quer continuar
+    if (
+      messageContent !== '1' &&
+      messageContent !== '2' &&
+      descricaoSolicitada
+    ) {
+      await this.sendAutomaticMessage(
         from,
-        `O que deseja fazer?\n\n1️⃣ - Descrever solicitação\n2️⃣ - Voltar`
-    );
-    descricaoSolicitada = false
-    return;
-}
- 
-// Se o usuário escolheu "Descrever solicitação" e ainda não solicitou a descrição
-if (messageContent === "1") {
-    await this.sendAutomaticMessage(
+        `O que deseja fazer?\n\n1️⃣ - Descrever solicitação\n2️⃣ - Voltar`,
+      );
+      descricaoSolicitada = false;
+      return;
+    }
+
+    // Se o usuário escolheu "Descrever solicitação" e ainda não solicitou a descrição
+    if (messageContent === '1') {
+      await this.sendAutomaticMessage(
         from,
-        `Por favor, descreva sua solicitação.`
-    );
+        `Por favor, descreva sua solicitação.`,
+      );
 
-    // Marca o usuário como "aguardando descrição"
-    await this.userSessionService.setUserSector(from, `${userSector}_aguardando_descricao`);
+      // Marca o usuário como "aguardando descrição"
+      await this.userSessionService.setUserSector(
+        from,
+        `${userSector}_aguardando_descricao`,
+      );
 
-    // Aguarda a resposta do usuário
-    const descriptionContent = await this.waitForUserResponse(from);
+      // Aguarda a resposta do usuário
+      const descriptionContent = await this.waitForUserResponse(from);
 
-    // Verifica se a descrição foi fornecida
-    if (descriptionContent && descriptionContent.trim() !== '') {
-        await this.sectorService.redirectToAttendant(from, userSector, descriptionContent);
+      // Verifica se a descrição foi fornecida
+      if (descriptionContent && descriptionContent.trim() !== '') {
+        await this.sectorService.redirectToAttendant(
+          from,
+          userSector,
+          descriptionContent,
+        );
         // Reseta o setor para o valor original (sem "_aguardando_descricao")
         await this.userSessionService.setUserSector(from, userSector);
-    }
-    descricaoSolicitada = true;
+      }
+      descricaoSolicitada = true;
 
-    // Marque que a descrição foi solicitada para evitar o loop
-}
+      // Marque que a descrição foi solicitada para evitar o loop
+    }
 
     // Se o usuário escolheu "Voltar"
-    if (messageContent === "2") {
-        await this.userSessionService.setUserSector(from, "nenhum");
-        await this.sendAutomaticMessage(
-            from,
-            `Atendimento reiniciado. Selecione o que deseja:\n\n1️⃣ - Suporte Técnico\n2️⃣ - Financeiro`
-        );
-        return; 
+    if (messageContent === '2') {
+      await this.userSessionService.setUserSector(from, 'nenhum');
+      await this.sendAutomaticMessage(
+        from,
+        `Atendimento reiniciado. Selecione o que deseja:\n\n1️⃣ - Suporte Técnico\n2️⃣ - Financeiro`,
+      );
+      return;
     }
-
-  
-}
+  }
 
   async getAllMessages(message: any) {
     try {
@@ -222,7 +231,9 @@ if (messageContent === "1") {
         to = to + '@c.us';
       }
 
-      const user = await prismaClient.user.findUnique({ where: { id: userId } });
+      const user = await prismaClient.user.findUnique({
+        where: { id: userId },
+      });
 
       if (!user) {
         throw new Error('Usuário não encontrado');
@@ -258,13 +269,15 @@ if (messageContent === "1") {
     try {
       const from = message.from;
       const messageContent = message.body.trim();
-  
+
       // Obtém o setor atual do usuário
       const userSession = await this.userSessionService.getUserSector(from);
-  
+
       // Encaminha a mensagem para o SectorService processar
     } catch (error) {
-      this.logger.error(`Erro ao processar resposta automática: ${error.message}`);
+      this.logger.error(
+        `Erro ao processar resposta automática: ${error.message}`,
+      );
     }
   }
 }

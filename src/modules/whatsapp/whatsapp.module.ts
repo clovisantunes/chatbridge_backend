@@ -18,6 +18,8 @@ import { UserSessionService } from 'src/services/WhatsServices/UserSession.servi
 import { UserSessionController } from 'src/controllers/whatsControllers/UserSession.controller';
 import { HistoryChatController } from 'src/controllers/whatsControllers/HistoryChat.controller';
 import { HistoryChatService } from 'src/services/WhatsServices/HistoryChat.service';
+import { DeleteSectorMessageService } from 'src/services/WhatsServices/DeleteSectorMessage.service';
+import { DeleteSectorMessageController } from 'src/controllers/whatsControllers/DeleteSectorMessage.controller';
 
 @Module({
   imports: [
@@ -28,6 +30,7 @@ import { HistoryChatService } from 'src/services/WhatsServices/HistoryChat.servi
     }),
   ],
   providers: [
+    DeleteSectorMessageService,
     WhatsAppService, // Usa WhatsAppService diretamente
     HistoryChatService,
     JwtAuthGuard,
@@ -45,6 +48,7 @@ import { HistoryChatService } from 'src/services/WhatsServices/HistoryChat.servi
     },
   ],
   controllers: [
+    DeleteSectorMessageController,
     WhatsAppController,
     ReceiveController,
     UserSessionController,
